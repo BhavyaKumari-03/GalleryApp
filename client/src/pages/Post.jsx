@@ -17,23 +17,22 @@ function Post() {
     formData.append('imageUrl', imageUrl);
 
     try {
-      const response = await axios.post('http://localhost:3000/posts', formData,{
-        headers: {
-          'Content-Type' : 'multipart/form-data',
-          Authorization: `Bearer ${localStorage.getItem('authtoken')}`,
-        },
-     });
-
+      const response = await axios.post('http://localhost:3000/posts',formData,{ 
+         headers: { 
+           'Content-Type' : 'multipart/form-data', 
+           Authorization: `Bearer ${localStorage.getItem('authtoken')}`, 
+         }, 
+        });
       if (response.status === 200) {
         console.log('posted');
         alert('Posted Your Blog');
-        navigate('/home');
+        navigate('/');
       } else {
         console.log('not posted');
       }
     } catch (error) {
       // Handle error
-      console.error(error);
+      console.log(error);
     }
   };
 
