@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import { Link } from 'react-router-dom';
 
 function Home() {
   const [posts, setPosts] = useState([]);
@@ -49,11 +48,11 @@ function Home() {
               </div>
               <div className="flex flex-col justify-between items-start">
                 <h1 className="font-semibold whitespace-nowrap">
-                  {post.heading}
+                  {post.Name}
                 </h1>
                 <div className="flex w-full justify-end">
                   <h1 className="text-sm text-gray-400 font-mono">
-                    - posted by {post.aname}
+                    - posted by {post.name}
                   </h1>
                 </div>
               </div>
