@@ -17,7 +17,7 @@ function Home() {
   }, []);
 
   const handleImageClick = (postId) => {
-    navigate(`/post/${postId}`);
+    navigate(`/posts/${postId}`);
   };
 
   if (!posts || posts.length === 0) {

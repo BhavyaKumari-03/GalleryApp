@@ -1,7 +1,10 @@
 import axios from "axios";
-import { useState,useEffect } from "react"
+import { useState,useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 
 function singlepage() {
+    const { id } = useParams();
     const [postData, setPostData] = useState({});
     useEffect(()=>{
         axios.get(`http://localhost:3000/posts/${id}`)
@@ -11,15 +14,17 @@ function singlepage() {
   return (
     <>
    <img
-            src={`http://localhost:3000/uploads/${postData.image}`}
+            src={`http://localhost:3000/uploads/${postData.imageUrl}`}
             alt={postData.image}
             style={{
               marginTop: "20px",
-              width: "700px",
-              height: "350px",
-              objectFit: "cover",
+              width: "100%",
+              height: "590px",
+              objectFit: "contain",
             }}
           />
+            <span style={{textAlign:"center",display:"block"}}>Image by {postData.title}</span>
+            
     </>
   )
 }

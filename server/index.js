@@ -201,21 +201,6 @@ app.get('/posts/profile', async (req, res) => {
 });
 
 
-app.get('/posts/:postId', async (req, res) => {
-  try {
-    const postId = req.params.postId;
-    const post = await Post.findOne({ where: { id: postId } });
-
-    if (post) {
-      res.json(post);
-    } else {
-      res.status(404).json({ error: 'Post not found' });
-    }
-  } catch (error) {
-    console.error('Error fetching post:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
 
 app.put('/posts/:postId', async (req, res) => {
   const requestedPostId = req.params.postId;

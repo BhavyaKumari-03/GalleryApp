@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Post from './pages/Post.jsx';
 import Register from './pages/Register.jsx';
 import Profile from './pages/Profile.jsx';
+import Singlepage from './pages/singlepage.jsx';
 import NotFound404 from './pages/notfound.jsx';
 
 const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path:"/Profile",
     element:<Profile/>,
+  },
+  {
+    path: "/posts/:id",
+    element: <Singlepage />, //Individual Page
   },
   {
     path:"/notfound",
