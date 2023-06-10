@@ -51,6 +51,32 @@ app.get('/users', async (req, res) => {
   res.send(users);
 });
 
+app.get('/users/profile', async (req, res) => {
+  try {
+    const token = req.headers["authorization"].split(' ')[1];
+    console.log(token)
+    const decoded = jwt.verify(token, 'super-secret');
+    if(!decoded.userId){
+      return res.status(401).send('Unauthorized');
+    }
+    const user = await User.findOne({
+      where: {
+        id: decoded.userId
+      }
+    });
+
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 app.put('/users/:email', async (req, res) => {
   const requestedEmail = req.params.email;
   const user = await User.findOne({ where: { email: requestedEmail } });
@@ -74,6 +100,7 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // Validate the credentials against the db
     const user = await User.findOne({
       where: { email, password }
     });
@@ -82,8 +109,10 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
+    //Create a JWT Token
     const token = jwt.sign({ userId: user.id }, 'super-secret', { expiresIn: '1d' });
 
+    //return the token in the response
     res.json({ status: 'ok', token });
   } catch (error) {
     console.error(error);
@@ -133,6 +162,31 @@ app.get('/posts', async (req, res) => {
     res.status(500).send('An error occurred while fetching posts');
   }
 });
+
+app.get('/posts/profile', async (req, res) => {
+  try {
+    const token = req.headers["authorization"].split(' ')[1];
+    const decoded = jwt.verify(token, 'super-secret');
+    
+    if (!decoded.userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const posts = await Post.findAll({
+      where: {
+        userId: decoded.userId
+      }
+    });
+    if (posts.length > 0) {
+      res.json(posts);
+    } else {
+      res.status(404).json({ error: 'No posts found for the user' });
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching posts:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 app.get('/posts/:postId', async (req, res) => {
   try {

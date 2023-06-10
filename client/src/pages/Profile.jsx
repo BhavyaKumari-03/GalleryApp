@@ -3,11 +3,13 @@ import { BiUser } from 'react-icons/bi';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 
 function Profile() {
     const [userDetails, setUserDetails] = useState(null);
     const [userPosts, setUserPosts] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -27,7 +29,7 @@ function Profile() {
         const fetchUserPosts = async () => {
             try {
                 const token = localStorage.getItem('authtoken');
-                const response = await axios.get('http://localhost:3000/posts', {
+                const response = await axios.get('http://localhost:3000/posts/profile', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -56,21 +58,7 @@ function Profile() {
         }
     };
 
-    const getShortenedContent = (content) => {
-        // Remove HTML tags from the content
-        const sanitizedContent = content.replace(/<[^>]+>/g, '');
-
-        const words = sanitizedContent.split(' ');
-        const shortenedWords = words.slice(0, 50);
-        const shortenedContent = shortenedWords.join(' ');
-
-        if (words.length > 50) {
-            return `${shortenedContent}...`;
-        }
-
-        return shortenedContent;
-    };
-
+    
 
     if (!userDetails || !userPosts) {
         return (
@@ -105,13 +93,9 @@ function Profile() {
                         >
                             <div className="w-4/6">
                                 <img className="h-full w-full rounded-lg" //src={post.imageUrl}
-                                src={`https://picsum.photos/300/200?random=${post.id}`} alt="Post Image" />
+                                src={`https://localhost:3000/image/${post.imageUrl}`} alt="Post Image" />
                             </div>
                             <div className="flex flex-col justify-between items-start">
-                                <div className="pb-2">
-                                    <h1 className="font-bold text-lg font-serif">{post.heading}</h1>
-                                    <p className="text-lg font-mono">{getShortenedContent(post.content)}</p>
-                                </div>
                                 <div className="flex justify-end space-x-6 text-2xl items-end">
                                     <button onClick={() => handleDeletePost(post.id)}>
                                         <BsTrash />
