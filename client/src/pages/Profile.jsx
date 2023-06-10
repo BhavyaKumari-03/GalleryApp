@@ -9,6 +9,7 @@ import { BarLoader } from 'react-spinners';
 function Profile() {
     const [userDetails, setUserDetails] = useState(null);
     const [userPosts, setUserPosts] = useState([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -58,17 +59,17 @@ function Profile() {
         }
     };
 
-    
+
 
     if (!userDetails || !userPosts) {
         return (
             <main className="flex flex-col justify-center items-center w-full h-full overflow-auto">
-              <div className="mt-16"></div>
-              <h1 className="text-2xl font-semibold text-center uppercase">
-                No User Found!
-              </h1>
+                <div className="mt-16"></div>
+                <h1 className="text-2xl font-semibold text-center uppercase">
+                    No User Found!
+                </h1>
             </main>
-          );
+        );
     }
 
     return (
@@ -93,18 +94,21 @@ function Profile() {
                         >
                             <div className="w-4/6">
                                 <img className="h-full w-full rounded-lg" //src={post.imageUrl}
-                                src={`https://localhost:3000/image/${post.imageUrl}`} alt="Post Image" />
+                                    src={`https://localhost:3000/image/${post.imageUrl}`} alt="Post Image" />
                             </div>
                             <div className="flex flex-col justify-between items-start">
-                                <div className="flex justify-end space-x-6 text-2xl items-end">
-                                    <button onClick={() => handleDeletePost(post.id)}>
-                                        <BsTrash />
-                                    </button>
+                                <div className="pb-2">
+                                    <h1 className="font-bold text-lg font-serif">{post.title}</h1>
+                                    </div>
+                                    <div className="flex justify-end space-x-6 text-2xl items-end">
+                                        <button onClick={() => handleDeletePost(post.id)}>
+                                            <BsTrash />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     ))}
-                </div>
+                        </div>
             </div>
         </main>
     );
