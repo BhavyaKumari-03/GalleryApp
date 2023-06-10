@@ -150,6 +150,7 @@ app.post('/posts', upload.single('imageUrl'), async (req, res) => {
 
 // Get all posts
 app.get('/posts', async (req, res) => {
+
   try {
     const posts = await Post.findAll({
       include: [{ model: User, attributes: ['id', 'f_name', 'email'] }],
@@ -160,6 +161,18 @@ app.get('/posts', async (req, res) => {
   } catch (error) {
     console.error('Error fetching Blog  posts:', error);
     res.status(500).send('An error occurred while fetching posts');
+  }
+});
+app.get("/posts/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+      const post = await Post.findByPk(id);
+      if (!post) {
+          return res.status(404).json({ error: "Post not found." });
+      }
+      res.json(post);
+  } catch (error) {
+      res.status(500).json({ error: "Failed to fetch the post." });
   }
 });
 
