@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom';
 
 function Post() {
 
- const [Name, setName] = useState('');
+ const [title, setTitle] = useState('');
+ //const [context, setContext] = useState('');
+ 
  const [imageUrl, setimageUrl] = useState(null);
  const navigate = useNavigate();
 
@@ -27,7 +29,8 @@ function Post() {
 
   const formData = new FormData();
 
-  formData.append('Name', Name);
+  formData.append('title', title); 
+  //formData.append('context', context);
   formData.append('imageUrl', imageUrl);
 
 
@@ -64,14 +67,22 @@ return (
         <form onSubmit={handleSubmit}>
           <div className="flex flex-row justify-between items-center p-3">
             <input
-              id="Name"
-              placeholder="Enter Name"
-              value={Name}
+              id="Title"
+              placeholder="Enter Title"
+              value={title}
               className="w-2/5 border-gray-300 border-2 rounded p-2"
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               required
             />
-            <input
+            {/* <input
+              id="context"
+              placeholder="Enter context"
+              value={context}
+              className="w-2/5 border-gray-300 border-2 rounded p-2"
+              onChange={(e) => setContext(e.target.value)}
+              required
+            /> */}
+             <input 
               id="image"
               type="file"
               accept="image/*"

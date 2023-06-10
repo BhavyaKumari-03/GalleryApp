@@ -7,10 +7,14 @@ const User = require('./user');
 
   class Post extends Model {}
   Post.init({
-    Name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false
     },
+    // context: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false
+    // },
     imageUrl: {
       type: DataTypes.STRING,
       allowNull: true

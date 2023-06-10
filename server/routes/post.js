@@ -19,6 +19,7 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
     const post = await Post.create({
       title: req.body.title,
+      //context: req.body.context,
       imageUrl: req.body.imageUrl,
       userId: req.user.id,
     });
@@ -26,7 +27,7 @@ router.post('/', authMiddleware, async (req, res) => {
     res.status(201).json(post);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error Not posted ' });
   }
 });
 

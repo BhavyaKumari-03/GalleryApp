@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FiUser } from 'react-icons/fi';
-import { ImBlogger } from 'react-icons/im';
+import { GrGallery } from 'react-icons/gr';
 import { BiSearch } from 'react-icons/bi';
 
 function Header() {
@@ -31,13 +31,13 @@ function Header() {
   const isRegisterPage = location.pathname === '/register';
 
   return (
-    <div className="w-full px-4 py-2 bg-white fixed shadow-sm shadow-slate-600">
-      <div className="w-full flex flex-row justify-between items-center">
+    <div className="w-full h-[80px] px-4 py-2 bg-white  shadow-sm shadow-slate-600">
+      <div className="w-full flex flex-row justify-between items-center h-[80px]">
         <div>
           <Link to="/">
             <div className="flex flex-row space-x-1 items-center">
-              <ImBlogger className="text-indigo-600" />
-              <h1 className="font-bold text-xl">MyBlogs</h1>
+              <GrGallery className="text-indigo-600" />
+              <h1 className="font-bold text-xl">Image Gallery</h1>
             </div>
           </Link>
         </div>

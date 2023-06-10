@@ -7,6 +7,9 @@ import Login from './pages/login.jsx';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Post from './pages/Post.jsx';
 import Register from './pages/Register.jsx';
+import Profile from './pages/Profile.jsx';
+import NotFound404 from './pages/notfound.jsx';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,8 +26,16 @@ const router = createBrowserRouter([
   {
     path:"/Register",
     element:<Register/>,
+  },
+  {
+    path:"/Profile",
+    element:<Profile/>,
+  },
+  {
+    path:"/notfound",
+    element:<NotFound404/>
   }
- 
+  
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
