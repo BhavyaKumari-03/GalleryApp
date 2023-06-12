@@ -41,6 +41,24 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Middleware to authenticate the token
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  jwt.verify(token, 'super-secret', (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
 app.post('/users', async (req, res) => {
   await User.create(req.body);
   res.send('User created');
@@ -51,31 +69,25 @@ app.get('/users', async (req, res) => {
   res.send(users);
 });
 
-app.get('/users/profile', async (req, res) => {
+app.get('/users/profile', authenticateToken , async (req, res) => {
   try {
-    const token = req.headers["authorization"].split(' ')[1];
-    console.log(token)
-    const decoded = jwt.verify(token, 'super-secret');
-    if(!decoded.userId){
-      return res.status(401).send('Unauthorized');
-    }
+    const userId = req.user.userId;
     const user = await User.findOne({
       where: {
-        id: decoded.userId
+        id: userId
       }
     });
 
     if (user) {
       res.send(user);
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send({ error: 'User not found' });
     }
   } catch (error) {
     console.error('Error fetching user:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 });
-
 
 app.put('/users/:email', async (req, res) => {
   const requestedEmail = req.params.email;
@@ -106,149 +118,82 @@ app.post('/login', async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    //Create a JWT Token
-    const token = jwt.sign({ userId: user.id }, 'super-secret', { expiresIn: '1d' });
+    // Generate a JWT token
+    const token = jwt.sign({ userId: user.id }, 'super-secret');
 
-    //return the token in the response
-    res.json({ status: 'ok', token });
+    res.json({ token });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'An error occurred. Please try again later.' });
+    console.error('Error logging in:', error);
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 
-// Create a new post
-app.post('/posts', upload.single('imageUrl'), async (req, res) => {
-  const { title } = req.body;
-  const token = req.headers['authorization'].split(' ')[1];
+app.post('/posts', authenticateToken, upload.single('image'), async (req, res) => {
+  const { title, content } = req.body;
+  const imageUrl = req.file ? req.file.path : '';
 
   try {
-    const decoded = jwt.verify(token, 'super-secret');
-    const user = await User.findByPk(decoded.userId);
-
-    if (!user) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const post = await Post.create({
-      title,
-      //context,
-      name: user.f_name,
-      imageUrl: req.file.filename,
-      userId: user.id,
-    });
-
-    res.json(post);
+    const userId = req.user.userId;
+    await Post.create({ title, content, imageUrl, userId });
+    res.send('Post created');
   } catch (error) {
     console.error('Error creating post:', error);
-    res.status(500).send('An error occurred while creating the post');
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 
-// Get all posts
 app.get('/posts', async (req, res) => {
-
-  try {
-    const posts = await Post.findAll({
-      include: [{ model: User, attributes: ['id', 'f_name', 'email'] }],
-
-    });
-
-    res.json(posts);
-  } catch (error) {
-    console.error('Error fetching Blog  posts:', error);
-    res.status(500).send('An error occurred while fetching posts');
-  }
+  const posts = await Post.findAll();
+  res.send(posts);
 });
-app.get("/posts/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-      const post = await Post.findByPk(id);
-      if (!post) {
-          return res.status(404).json({ error: "Post not found." });
-      }
-      res.json(post);
-  } catch (error) {
-      res.status(500).json({ error: "Failed to fetch the post." });
+
+app.get('/posts/:id', async (req, res) => {
+  const postId = req.params.id;
+  const post = await Post.findOne({ where: { id: postId } });
+
+  if (post) {
+    res.send(post);
+  } else {
+    res.status(404).send({ error: 'Post not found' });
   }
 });
 
-app.get('/posts/profile', async (req, res) => {
-  try {
-    const token = req.headers["authorization"].split(' ')[1];
-    const decoded = jwt.verify(token, 'super-secret');
-    
-    if (!decoded.userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    const posts = await Post.findAll({
-      where: {
-        userId: decoded.userId
-      }
-    });
-    if (posts.length > 0) {
-      res.json(posts);
-    } else {
-      res.status(404).json({ error: 'No posts found for the user' });
-    }
-  } catch (error) {
-    console.error('Error occurred while fetching posts:', error);
-    res.status(500).json({ error: 'Internal server error' });
+app.put('/posts/:id', authenticateToken, upload.single('image'), async (req, res) => {
+  const postId = req.params.id;
+  const post = await Post.findOne({ where: { id: postId } });
+
+  if (!post) {
+    return res.status(404).send({ error: 'Post not found' });
   }
-});
 
-
-
-app.put('/posts/:postId', async (req, res) => {
-  const requestedPostId = req.params.postId;
+  const { title, content } = req.body;
+  const imageUrl = req.file ? req.file.path : post.imageUrl;
 
   try {
-    const post = await Post.findOne({ where: { id: requestedPostId } });
-
-    if (!post) {
-      return res.status(404).json({ error: 'Post not found' });
-    }
-
-    post.title = req.body.title;
-    post.content = req.body.content;
-
-    await post.save();
-
+    await post.update({ title, content, imageUrl });
     res.send('Post updated');
   } catch (error) {
     console.error('Error updating post:', error);
-    res.status(500).send('An error occurred while updating the post');
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 
-app.delete('/posts/:postId', async (req, res) => {
-  const requestedPostId = req.params.postId;
+app.delete('/posts/:id', authenticateToken, async (req, res) => {
+  const postId = req.params.id;
 
   try {
-    const post = await Post.findOne({ where: { id: requestedPostId } });
-
-    if (!post) {
-      return res.status(404).json({ error: 'Post not found' });
-    }
-
-    await Post.destroy({ where: { id: requestedPostId } });
-
+    await Post.destroy({ where: { id: postId } });
     res.send('Post removed');
   } catch (error) {
     console.error('Error deleting post:', error);
-    res.status(500).send('An error occurred while deleting the post');
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 
-app.get('/image/:imageName', (req, res) => {
-  const imageName = req.params.imageName;
-  const imagePath = path.join(__dirname, 'uploads', imageName);
-  res.sendFile(imagePath);
-});
-
-app.listen(3000, () => {
-  console.log('App is running');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

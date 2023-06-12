@@ -45,7 +45,7 @@ function Header() {
           {isLoggedIn && !isLoginPage && !isRegisterPage ? (
             <div>
               <Link to="/profile">
-                <FiUser className="text-indigo-600 text-2xl" />
+                <FiUser className="text-black text-2xl" />
               </Link>
             </div>
           ) : !isLoginPage && !isRegisterPage ? (

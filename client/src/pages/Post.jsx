@@ -65,7 +65,7 @@ return (
       <div className="bg-white rounded-lg w-full h-full flex-1 flex flex-col">
         <h1 className='text-center text-2xl font-semibold text-indigo-600'>Post Your Blog!</h1>
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-row justify-between items-center p-3">
+          <div className="flex flex-col justify-center items-center p-3">
             <input
               id="Title"
               placeholder="Enter Title"
@@ -74,14 +74,7 @@ return (
               onChange={(e) => setTitle(e.target.value)}
               required
             />
-            {/* <input
-              id="context"
-              placeholder="Enter context"
-              value={context}
-              className="w-2/5 border-gray-300 border-2 rounded p-2"
-              onChange={(e) => setContext(e.target.value)}
-              required
-            /> */}
+        
              <input 
               id="image"
               type="file"
