@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Background from "../assets/logo.png"
+
 function Login() {
   const [inputs, setInputs] = useState({
     email: '',
@@ -38,10 +39,9 @@ function Login() {
 
   return (
     <>
+      <div className='flex flex-col sm:flex-row items-center justify-center'>
 
-      <div className='flex h-[80vh] items-center justify-center'>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-10 sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
 
             <h2 className="text-center text-2xl font-bold leading-9 mt-3 h-[30px]">
@@ -108,18 +108,7 @@ function Login() {
           </form>
         </div>
         {/* Logo */}
-        <div style={{
-          width: "50%",
-          height: "80vh",
-          // backgroundColor : "pink",
-          marginTop: "60px",
-          backgroundImage: `url(${Background})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center center",
-          backgroundSize: "contain"
-        }}>
-
-        </div>
+        <div className="hidden sm:block w-1/2 h-[80vh] bg-cover bg-center" style={{ backgroundImage: `url(${Background})` }}></div>
       </div>
     </>
   );

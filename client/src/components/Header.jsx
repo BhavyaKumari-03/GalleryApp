@@ -31,41 +31,37 @@ function Header() {
   const isRegisterPage = location.pathname === '/register';
 
   return (
-    <div className="w-full h-[80px] px-4 py-2 bg-white  shadow-sm shadow-slate-600">
-      <div className="w-full flex flex-row justify-between items-center h-[80px]">
+    <div className="w-full px-4 py-2 bg-white shadow-sm">
+      <div className="flex flex-row justify-between items-center">
         <div>
           <Link to="/">
-            <div className="flex flex-row space-x-1 items-center">
+            <div className="flex items-center space-x-1">
               <GrGallery className="text-indigo-600" />
               <h1 className="font-bold text-xl">Image Gallery</h1>
             </div>
           </Link>
         </div>
-        <div className="flex flex-row justify-between items-center space-x-6">
+        <div className="flex items-center space-x-4">
           {isLoggedIn && !isLoginPage && !isRegisterPage ? (
-            <div>
-              <Link to="/profile">
-                <FiUser className="text-black text-2xl" />
-              </Link>
-            </div>
+            <Link to="/profile">
+              <FiUser className="text-black text-2xl" />
+            </Link>
           ) : !isLoginPage && !isRegisterPage ? (
-            <div>
-              <Link to="/login">
-                <h1 className="font-bold text-lg space-x-1">Login</h1>
-              </Link>
-            </div>
+            <Link to="/login">
+              <h1 className="font-bold text-lg">Login</h1>
+            </Link>
           ) : null}
           {isLoggedIn ? (
-            <div className="flex flex-row space-x-2">
+            <>
               <button onClick={handleLogout}>
-                <h1 className="font-bold text-lg space-x-1">Logout</h1>
+                <h1 className="font-bold text-lg">Logout</h1>
               </button>
-              <div className="text-black cursor-pointer px-4 py-1 rounded space-x-1 flex flex-row items-center font-semibold">
-                <Link to="/Post">
-                  <h1 className="font-bold text-lg space-x-1">Post</h1>
+              <div className="flex items-center">
+                <Link to="/post">
+                  <h1 className="font-bold text-lg">Post</h1>
                 </Link>
               </div>
-            </div>
+            </>
           ) : null}
         </div>
       </div>
