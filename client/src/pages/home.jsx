@@ -36,12 +36,12 @@ function Home() {
         <div
           onClick={() => handleImageClick(post.id)} // Pass the postId to the handler
           key={post.id}
-          className="w-[350px] h-[350px] sm:w-[250px] sm:h-[250px] md:w-[350px] md:h-[350px] flex flex-col items-center"
+          className="w-full height-[350px] flex flex-col items-center mt-4 px-2"
         >
           <img
-            src={`http://localhost:3000/uploads/${post.imageUrl}`}
+            src={`http://localhost:3000/${post.imageUrl}`}
             alt="Post"
-            className="w-full h-[250px] sm:h-[150px] md:h-[250px] object-contain"
+            style={{ width : "100%", height: "300px", objectFit: "cover" }}
           />
           <div>
             <p className="font-sans">

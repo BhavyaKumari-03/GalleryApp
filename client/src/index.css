@@ -14,3 +14,23 @@
     grid-column-gap: 5px;
     grid-row-gap: 5px;
     }
+
+@media screen and (max-width:768px) {
+    .parent {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        grid-column-gap: 2px;
+        grid-row-gap: 2px;
+        }
+}
+
+@media screen and (max-width:368px) {
+    .parent {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(1, 1fr);
+        grid-column-gap: 2px;
+        grid-row-gap: 2px;
+        }
+}

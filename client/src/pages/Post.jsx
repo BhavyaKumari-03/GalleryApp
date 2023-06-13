@@ -25,7 +25,6 @@ function Post() {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('authtoken')}`,
         },
-        body: formData,
       });
 
       if (response.status === 200) {
@@ -48,9 +47,8 @@ function Post() {
 
   return (
     <main className="flex bg-white flex-col justify-center items-center w-full h-full overflow-auto">
-      <div className="mt-16"></div>
       <div className="bg-white rounded-lg w-full h-full flex-1 flex flex-col">
-        <h1 className="text-center text-2xl font-semibold text-[#4EEAF6] md:text-3xl">
+        <h1 className="text-center text-2xl font-semibold text-[#233E3D] md:text-3xl">
           Post Your Blog!
         </h1>
         <form onSubmit={handleSubmit}>
@@ -78,7 +76,7 @@ function Post() {
             <div>
               <button
                 type="submit"
-                className="text-[#4EEAF6]  text-white font-bold py-2 px-4 rounded shadow-lg"
+                className="text-[#243E3D] w-[200px] p-[20px] font-bold py-2 px-4 rounded bg-[#F5F0F0]"
               >
                 Post
               </button>
@@ -90,4 +88,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default Post;

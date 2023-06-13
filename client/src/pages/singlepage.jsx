@@ -14,7 +14,7 @@ function singlepage() {
   return (
     <>
    <img
-            src={`http://localhost:3000/uploads/${postData.imageUrl}`}
+            src={`http://localhost:3000/${postData.imageUrl}`}
             alt={postData.image}
             style={{
               marginTop: "20px",

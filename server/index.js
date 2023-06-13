@@ -29,7 +29,7 @@ app.use(cors());
 const storage = multer.diskStorage({
   destination: 'uploads/',
   filename: (req, file, cb) => {
-    const fileName = generateRandomString(12) + ".png";
+    const fileName = generateRandomString(12) + path.extname(file.originalname);
     cb(null, fileName);
   }
 });
@@ -131,7 +131,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/posts', authenticateToken, upload.single('image'), async (req, res) => {
+app.post('/posts', authenticateToken, upload.single('imageUrl'), async (req, res) => {
   const { title, content } = req.body;
   const imageUrl = req.file ? req.file.path : '';
 
@@ -148,6 +148,30 @@ app.post('/posts', authenticateToken, upload.single('image'), async (req, res) =
 app.get('/posts', async (req, res) => {
   const posts = await Post.findAll();
   res.send(posts);
+});
+
+app.get('/posts/profile', async (req, res) => {
+  try {
+    const token = req.headers["authorization"].split(' ')[1];
+    const decoded = jwt.verify(token, 'super-secret');
+
+    if (!decoded.userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const posts = await Post.findAll({
+      where: {
+        userId: decoded.userId
+      }
+    });
+    if (posts.length > 0) {
+      res.json(posts);
+    } else {
+      res.status(404).json({ error: 'No posts found for the user' });
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching posts:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 app.get('/posts/:id', async (req, res) => {
@@ -195,5 +219,5 @@ app.delete('/posts/:id', authenticateToken, async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
